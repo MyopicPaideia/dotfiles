@@ -1,0 +1,89 @@
+#! /bin/sh
+
+## FUNCTION TO FLUSH DATA FROM SCRIPTS & RERUN THEM ##
+
+	_restart() {
+		command -v "$1" > /dev/null
+	}
+
+## DETERMINE DISPLAY CONFIGURATION THEN SET WORKSPACES ##
+
+	bspc config remove_disabled_monitors true
+	bspc config remove_unplugged_monitors true
+	
+	EXTERNAL="DP-2"
+	INTERNAL="eDP-1"
+
+	if [ -n "$(xrandr --query | grep 'DP-2 connected')" ]; then
+  		xrandr --output $INTERNAL --off --output $EXTERNAL --mode 3840x2160 --rate 30
+		bspc subscribe monitor_remove &
+		bspc monitor -d WORK COMS CREATE MEDIA MISC SYS CONFIG
+	else
+  		xrandr --output $INTERNAL --mode 1920x1200 --rate 59.95 --output $EXTERNAL --off
+		bspc subscribe monitor_remove &
+		bspc monitor -d WORK COMS CREATE MEDIA MISC SYS CONFIG
+	fi
+	
+## VISUALS & BEHAVIOR ##
+
+# §Window Appearance #
+	bspc config top_padding 46
+	bspc config border_radius 10
+	bspc config border_width 0
+	bspc config window_gap 10
+	bspc config split_ratio 0.5
+	bspc config borderless_monocle true
+	bspc config gapless_monocle false
+	
+#§ Behavior Configuration #
+	bspc config focus_follows_pointer true
+	bspc config pointer_follows_monitor true
+	bspc config pointer_modifier mod1
+	bspc config pointer_action1 move
+	bspc config pointer_action2 resize_corner
+
+## WINDOW RULES ##
+
+	bspc rule -a Gimp desktop="CREATE" state=floating follow=on
+	bspc rule -a Chromium desktop="WORK"
+	bspc rule -a Brave-browser desktop="CONFIG"
+	bspc rule -a Slack desktop="COMS"
+	bspc rule -a discord desktop="COMS"
+	bspc rule -a Thunderbird desktop="COMS"
+	bspc rule -a Blueman-manager state=floating
+	bspc rule -a Spacefm state=floating
+	bspc rule -a feh state=floating
+	bspc rule -a Lxappearance state=floating
+
+## AUTOSTART ##
+
+# 	Set keyboard layout #
+	setxkbmap -model applealu_iso -layout se
+
+# 	Initialize Simple X HotKey Daemon #
+	killall -I -q sxhkd
+	sxhkd &
+
+# 	Initialize Picom compositor #
+	killall -I -q  picom
+	picom --experimental-backends --config /home/dlg/.config/picom/picom.conf -b &
+	
+# 	Initialize Polybar launch script #
+	killall -I -q polybar
+	/home/dlg/.config/polybar/launch.sh &
+
+# 	Set wallpaper using Feh #
+	killall -I -q feh
+	feh --bg-fill /home/dlg/wallpaper/wallpaper.jpg &
+
+# 	Initialize Bluetooth system tray applet #
+	killall -I -q blueman-applet
+	blueman-applet
+
+# 	Initialize NetworkManager system tray applet #
+	killall -I -q nm-applet
+	nm-applet
+
+# 	Initialize battery monitor system tray applet #
+	killall -I -q cbatticon
+	cbatticon

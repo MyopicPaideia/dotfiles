@@ -1,0 +1,118 @@
+[colors]
+foreground = #FFFFFF
+foreground-alt = #666666
+background = #4D000000
+red = #ff5555
+green = #50fa7b
+blue = #8be9fd
+yellow = #f1fa8c
+purple = #bd93f9
+focused = #4D808080
+
+## GLOBAL CONFIGURATION ##
+[global/wm]
+morgin-top = 10
+margin-bottom = 10
+
+## MAIN BAR CONFIGURATION ##
+
+[bar/EXTERNAL]
+override-redirect = true
+offset-x = 10
+offset-y = 10
+width = 3820
+height = 36
+foreground = ${colors.foreground}
+background = ${colors.background}
+font-0 = Font Awesome 5 Brand Regular:style=Regular:size=12;2
+font-1 = Hack Nerd Font:style=Bold:size=12;3
+
+padding-right = 2
+padding-left = 2
+module-margin = 2
+border-size = 0
+radius = 10
+fixed-center = true
+
+modules-left = bspwm xwindow
+modules-right = date
+tray-position = center
+tray-offset-x = 0
+
+scroll-up = bspwm-desknext
+scroll-down = bspwm-deskprev
+enable-ipc = true
+
+[bar/LAPTOP]
+inherit = bar/EXTERNAL
+width = 1900
+
+[module/xwindow]
+type = internal/xwindow
+label = %title%
+format-prefix = "|   "
+
+[module/bspwm]
+type = internal/bspwm
+module-margin = 0
+
+label-focused = %name%
+label-focused-background = ${colors.focused}
+label-focused-underline = ${colors.purple}
+label-focused-padding = 1
+
+label-occupied = %name%
+label-occupied-padding = 1
+
+label-urgent = %name%
+label-urgent-padding = 1
+
+label-empty = %name%
+label-empty-padding = 1
+
+mouse = pointer
+
+[module/time]
+type = internal/date
+interval = 1
+label = %time%
+format-prefix = " "
+time = " %R"
+time-alt = %H:%M:%S
+
+[module/date]
+type = internal/date
+interval = 1
+label = %date%
+# format-prefix = " "
+date = "%A %B%e, %Y | %T | Week %V"
+
+[module/pulseaudio]
+type = internal/pulseaudio
+sink = alsa_output.pci-0000_2f_00.1.hdmi-stereo-extra4
+interval = 5
+format-volume = <ramp-volume> <label-volume>
+
+label-muted = ﱝ muted
+ramp-volume-0 = 
+ramp-volume-1 = 墳
+ramp-volume-2 = 
+
+[module/music]
+type = custom/script
+format = <label>
+label = ﱘ %output%
+exec = echo $(playerctl metadata xesam:title) - $(playerctl metadata xesam:artist | sed "s/ - Topic//g")
+exec-if = playerctl metadata
+interval = 0
+
+[module/wireless]
+type = internal/network
+interface = wlan0
+label-connected =  %local_ip%  %downspeed%  %upspeed%
+
+[module/wired]
+type = internal/network
+interface = enp7s0u1u2
+label-connected =  %local_ip%  %downspeed%  %upspeed%
+
