@@ -1,2 +1,2 @@
 # dotfiles
-Just my dotfiles - bspwm &amp; polybar pus diverse 
+Just my dotfiles - bspwm, sxhkd, &amp; polybar
